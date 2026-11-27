@@ -105,3 +105,5 @@
 .cob-head .pe-toolbar select{width:103px;min-width:103px;max-width:103px;height:27px;padding:3px;border-radius:5px;font-size:10px;line-height:1.2}
 .cob-head .pe-header-tools{flex:0 0 auto;flex-wrap:nowrap;gap:3px;margin-left:auto}
 .cob-head .cob-close{position:sticky;right:0;flex:0 0 27px;width:27px;height:27px;margin-left:2px;padding:0;background:#6d1724;font-size:21px;line-height:1}
+
+.pe-tool-search{position:sticky;top:0;z-index:1;margin-top:8px}.pe-section[hidden]{display:none}

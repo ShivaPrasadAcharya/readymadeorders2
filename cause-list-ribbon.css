@@ -154,4 +154,6 @@
 }
 
 
-.cpr-link[href*="snap-drop.net"],.cpr-link[href*="send-anywhere.com"]{color:#3b2910;background:#fff1ac;border-color:#f1d674;font-weight:900;font-size:16px}
+.cpr-link[href*="send-anywhere.com"]{color:#3b2910;background:#fff1ac;border-color:#f1d674;font-weight:900;font-size:16px}
+
+.cpr-inner{flex-wrap:wrap}.cpr-link[href*="send-anywhere.com"]{font-size:12px}

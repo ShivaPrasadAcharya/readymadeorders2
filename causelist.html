@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ne">
-<head>
+<head><link rel="icon" type="image/svg+xml" href="assets/court.svg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#7b1f2b">
@@ -929,6 +929,7 @@
     .input-disclosure > .preparation-fields { padding: 12px; margin: 0; }
   </style>
   <link id="cause-list-firebase-sync-style" rel="stylesheet" href="firebase-sync.css">
+<link rel="stylesheet" href="assets/desk.css">
 </head>
 <body>
   <nav id="causeListSiblingManifest" hidden aria-hidden="true">
@@ -949,6 +950,7 @@
     <a data-project-file href="pdfjs-license.txt">pdfjs-license.txt</a>
     <a data-project-file href="order/index.json">order/index.json</a>
   </nav>
+  <header class="desk-header"><div class="desk-head-inner"><div class="desk-name"><img src="assets/court.svg" alt=""><div><a href="index.html">अदालती कार्यकक्ष</a><h1>पेशी सूची र आदेश</h1></div></div><nav class="desk-links" aria-label="कार्यकक्षका लिंक"><a href="index.html">▤ आदेश सङ्ग्रह</a><a href="README.html">ⓘ प्रयोग विधि</a><a href="https://github.com/ShivaPrasadAcharya/readymadeorders2/upload/main" target="_blank" rel="noopener noreferrer" title="GitHub मा फाइल अपलोड गर्नुहोस्">＋ Add files</a></nav><span id="targetPill" hidden></span></div></header>
   <nav class="page-ribbon" aria-label="उपलब्ध पेशी सूची">
     <div class="page-ribbon-inner">
       <form class="advanced-search" id="advancedSearchForm" role="search">
@@ -957,7 +959,7 @@
         <datalist id="advancedSearchHistory"></datalist>
         <label class="normalizer-toggle" title="रि/री/ऋ, श/ष/स, व/ब, नासिक्य अक्षर, नेपाली अंक र space लाई मिलाएर खोज्छ">
           <input type="checkbox" id="nepaliNormalizerToggle" checked>
-          <span>Nepali normalizer</span>
+          <span>हिज्जे मिलाउने</span>
         </label>
         <label class="normalizer-toggle" title="Checked हुँदा order/index.json मा जोडिएका attachment files को content मात्र खोज्छ">
           <input type="checkbox" id="smartSearchToggle">
@@ -970,47 +972,14 @@
         <button type="submit" class="advanced-search-btn" id="advancedSearchBtn">खोज्नुहोस्</button>
         <button type="button" class="advanced-search-clear" id="advancedSearchClear" aria-label="खोज नतिजा बन्द गर्नुहोस्" title="खोज नतिजा बन्द गर्नुहोस्">×</button>
       </form>
-      <div class="cause-list-nav">
-        <label for="causeMonthSelect">महिना</label>
-        <select id="causeMonthSelect" aria-controls="causeRibbonDateSelect">
-          <option value="">पेशी सूची खोजिँदैछ…</option>
-        </select>
-        <label for="causeRibbonDateSelect">मिति</label>
-        <select id="causeRibbonDateSelect" disabled>
-          <option value="">पहिला महिना रोज्नुहोस्</option>
-        </select>
-        <a class="readme-btn" href="README.html" target="_blank" rel="noopener" title="प्रयोग विधि खोल्नुहोस्">ⓘ प्रयोग विधि</a>
-        <a class="readme-btn" href="https://shivaprasadacharya.github.io/adeshkdc/orders.html?normalizer=1&amp;smart=0&amp;highlight=1" target="_blank" rel="noopener noreferrer" title="आदेश सम्पादन site खोल्नुहोस्">⚖ आदेश सम्पादन</a>
-        <a class="readme-btn" href="https://send-anywhere.com/#transfer" target="_blank" rel="noopener noreferrer" title="फाइल आदानप्रदान (SendAnywhere)" aria-label="फाइल आदानप्रदान (SendAnywhere)">📎</a>
-        <button type="button" class="folder-scan-btn" id="scanCauseFolder">फाइल स्वतः खोज्नुहोस्</button>
-        <input type="file" id="causeFolderInput" webkitdirectory directory multiple hidden>
-      </div>
+
       <section class="advanced-search-results" id="advancedSearchResults" aria-live="polite" hidden>
         <p class="advanced-search-status" id="advancedSearchStatus"></p>
         <ol class="advanced-search-list" id="advancedSearchList"></ol>
       </section>
     </div>
   </nav>
-  <header class="masthead">
-    <div class="masthead-inner">
-      <div class="editor-identity">
-        <a href="./index.html" style="color:inherit">← आदेश सङ्ग्रह</a><h1>पेशी सूचीबाट आदेश सम्पादन</h1>
-        <p class="subtitle">Inspirer—श्री अन्जनराज सापकोटा (जिल्ला न्यायाधीश)</p>
-        <p class="subtitle">Developer: श्री शिवप्रसाद आचार्य (जिल्ला न्यायाधीश)</p>
-      </div>
-      <span class="target-pill" id="targetPill" hidden></span>
-    </div>
-  </header>
-
   <main>
-    <div class="intro">
-      <div>
-        <h2>मिति राख्नुहोस्, पेशी सूची ल्याउनुहोस् र आदेश तयार गर्नुहोस्</h2>
-        <p>पेशी सूचीबाट नेपाली अदालती आदेश वा फैसला तयार गर्नुहोस्। Preview का बहससहित र आदेशसहित button बाट बहस तथा छानिएको आदेश कागजातको व्यहोरामा समावेश गर्न सकिन्छ।</p>
-      </div>
-      <div class="privacy-note" title="फाइल बाह्य server मा पठाइँदैन">● Browser भित्रै प्रशोधन हुन्छ</div>
-    </div>
-
     <section class="workspace" aria-label="Source code filter workspace">
       <article class="panel">
         <div class="panel-head">
@@ -1023,7 +992,7 @@
 
         <div class="panel-body">
           <div class="date-loader">
-            <label for="causeDateSearch">अदालतबाट मितिअनुसार पेशी सूची ल्याउनुहोस्</label>
+            <label for="causeDateSearch">पेशी मिति</label>
             <div class="date-loader-row">
               <input id="causeDateSearch" inputmode="numeric" autocomplete="off" placeholder="YYYYMMDD" aria-describedby="causeDateHint causeDateNotice">
               <button type="button" class="btn btn-subtle" id="causeDateSearchBtn">पेशी सूची ल्याउनुहोस्</button>
@@ -1039,7 +1008,7 @@
               <option value="शिवप्रसाद आचार्य">शिवप्रसाद आचार्य</option>
             </select>
             <button type="button" class="btn" id="goCauseListBtn" title="छानिएको न्यायाधीशको पेशी सूची तयार गरी खोल्नुहोस्" disabled>सूची खोल्नुहोस्</button>
-            <small>Source code मा भेटिएका न्यायाधीशहरू यहाँ स्वतः थपिन्छन्।</small>
+            <small>पेशी सूची प्राप्त भएपछि न्यायाधीश छान्नुहोस्।</small>
           </div>
 
           <div class="input-history" aria-label="पछिल्ला input sessions">
@@ -1049,7 +1018,7 @@
           </div>
 
           <details class="input-disclosure" id="sourceDisclosure">
-            <summary>Source code — फाइल Upload / Code Paste</summary>
+            <summary>फाइलबाट ल्याउनुहोस् वा HTML टाँस्नुहोस्</summary>
             <div class="input-disclosure-body">
           <div class="segmented" role="tablist" aria-label="Input method">
             <button type="button" id="uploadTab" role="tab" aria-selected="false" aria-controls="uploadPane">फाइल Upload</button>
@@ -1108,6 +1077,18 @@
         </div>
       </article>
 
+      <aside class="desk-side"><section class="desk-card"><h2>▦ प्रकाशित पेशी सूची</h2>      <div class="cause-list-nav">
+        <label for="causeMonthSelect">महिना</label>
+        <select id="causeMonthSelect" aria-controls="causeRibbonDateSelect">
+          <option value="">पेशी सूची खोजिँदैछ…</option>
+        </select>
+        <label for="causeRibbonDateSelect">मिति</label>
+        <select id="causeRibbonDateSelect" disabled>
+          <option value="">पहिला महिना रोज्नुहोस्</option>
+        </select>
+        <button type="button" class="folder-scan-btn" id="scanCauseFolder">फाइल स्वतः खोज्नुहोस्</button>
+        <input type="file" id="causeFolderInput" webkitdirectory directory multiple hidden>
+      </div></section><section class="desk-card"><h2>कार्यकक्षका साधन</h2><a href="https://shivaprasadacharya.github.io/adeshkdc/orders.html?normalizer=1&amp;smart=0&amp;highlight=1" target="_blank" rel="noopener noreferrer">✎ आदेश सम्पादन ↗</a><a href="https://send-anywhere.com/" target="_blank" rel="noopener noreferrer">⇄ Send Anywhere ↗</a><a href="https://github.com/ShivaPrasadAcharya/readymadeorders2/upload/main" target="_blank" rel="noopener noreferrer" title="GitHub मा फाइल अपलोड गर्नुहोस्">＋ Add files</a></section></aside>
       <details class="panel output-panel" id="outputPanel">
         <summary class="panel-head">
           <div class="panel-title">
@@ -1153,7 +1134,7 @@
     </section>
   </main>
 
-  <footer>
+  <footer><span>प्रेरणा · श्री अन्जनराज सापकोटा &nbsp; विकास · श्री शिवप्रसाद आचार्य (जिल्ला न्यायाधीश)</span>
     <span id="footerTarget">Target: माननीय जिल्ला न्यायाधीश श्री शिवप्रसाद आचार्य</span>
     <span>Keyboard shortcut: Ctrl/⌘ + Enter</span>
   </footer>
@@ -2973,6 +2954,10 @@
         doc.querySelectorAll("#cause-list-ribbon-runtime, #cause-list-ribbon-style, #court-order-builder-runtime, #court-order-builder-style, #preview-editor-runtime, #preview-editor-style, #nepali-proofreader-engine-runtime, #cause-list-firebase-sync-runtime, #cause-list-firebase-sync-style, #cause-list-config, script[data-cob-nepali-date]")
           .forEach((node) => node.remove());
         const head = doc.head || doc.documentElement.insertBefore(doc.createElement("head"), doc.body || null);
+        head.querySelectorAll('link[rel~="icon"]').forEach(icon => icon.remove());
+        const favicon = doc.createElement("link");
+        favicon.rel = "icon"; favicon.href = new URL("assets/court.svg", location.href).href;
+        head.appendChild(favicon);
         const ribbonStyle = doc.createElement("link");
         ribbonStyle.id = "cause-list-ribbon-style";
         ribbonStyle.rel = "stylesheet";
@@ -3674,7 +3659,8 @@
               const bench = twoDigits(table.dataset.cobBenchNumber || "1");
               const causeList = twoDigits(table.dataset.cobCauselistNumber || "1");
               const stem = [dateKey, bench, causeList, code + "-" + serialRows[code]].join(".");
-              const filename = stem + ".txt";
+              const caseNumber = toAsciiDigits(cell(row,info.map.caseNo).replace(/[（(][^()（）]*[)）]/,"")).trim().replace(/\s*-\s*/g,"-");
+              const filename = (rowSerial.trim().replace(/[.।]+$/,"") + "." + caseNumber).replace(/[\\/:*?"<>|]/g,"-") + ".txt";
               resources[stem] = [{
                 type: "file",
                 path: "order/" + dateKey + "/" + filename,

@@ -54,3 +54,7 @@
 .cob-adesh-status{min-height:1.4em;margin:0;color:#792530;font-size:.86rem}
 .cob-adesh-footer{display:flex;justify-content:flex-end;gap:10px;padding:14px 22px;border-top:1px solid #e1e4e8;background:#fff;flex:none}
 @media(max-width:600px){.cob-import-actions{width:100%;margin:0;order:2}.cob-adesh-dialog{height:100vh;height:100dvh}.cob-adesh-selects{grid-template-columns:1fr}.cob-adesh-body{padding:14px}.cob-adesh-footer{padding:12px;flex-wrap:wrap}}
+.cob-list-export{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:12px 0;padding:11px 14px;border:1px solid #d7c9bf;border-radius:9px;background:#faf7f0;color:#55474c;font:14px/1.6 "Nirmala UI",sans-serif}.cob-list-export button{border:0;border-radius:7px;padding:9px 15px;color:white;background:#542238;font:inherit;font-weight:bold;cursor:pointer}
+@media screen{.cob-modal{background:#f3f0e9;border:1px solid #d7cfc4}.cob-head{background:#542238;border-bottom-color:#c5a367}.cob-controls{padding:15px;background:#fffefa;border:1px solid #ddd6cb;border-radius:10px}.cob-tools-head{color:#542238}.cob-tools-panel{box-shadow:0 12px 38px #37292c35}.cob-draft-wrap.cob-show{padding:12px;background:#e9e5dd;border-radius:10px}.cob-draft{background:white;box-shadow:0 2px 11px #28232b16}.cob-body button:focus-visible,.cob-list-export button:focus-visible{outline:3px solid #b08647;outline-offset:2px}}
+@media screen and (max-width:700px){.cob-draft-wrap.cob-show{padding:2px}.cob-controls{padding:10px}.cob-head h2{overflow-wrap:anywhere}}
+@media print{.cob-list-export{display:none!important}}

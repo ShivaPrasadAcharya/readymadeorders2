@@ -1144,6 +1144,7 @@
               return e && n.indexOf(e) === t;
             });
           })(n);
+          a.push(orderName(e));
           let o = await (async function () {
               return (
                 M ||
@@ -1443,29 +1444,28 @@
         function ae() {
           ne(N);
         }
-        function oe(e, preservedBody) {
-          if (!T) return;
-          const a = m(T.rawCase),
+        function orderHtml(row, settings, preservedBody) {
+          const a = m(row.rawCase),
             o = f(a.caseNo),
-            c = g.value || "आदेश",
+            c = settings.documentType || "आदेश",
             isCrimeSentence = "कसूर_सजाय" === c,
             i = "फैसला" === c || isCrimeSentence,
             l = d(t.causeDate),
             u = o ? "निवेदन नम्बर-" : "मुद्दा नम्बर-",
-            h = y.value || t.selectedJudge || "शिवप्रसाद आचार्य",
+            h = settings.judge || t.selectedJudge || "शिवप्रसाद आचार्य",
             x = String(
-              v.value || (o ? "निवेदक|विपक्षी" : "वादी|प्रतिवादी"),
+              settings.partyStatus || (o ? "निवेदक|विपक्षी" : "वादी|प्रतिवादी"),
             ).split("|"),
             C = x[0] || (o ? "निवेदक" : "वादी"),
             S = x[1] || (o ? "विपक्षी" : "प्रतिवादी"),
-            namesReversed = "partial" === j || "full" === j,
-            rolesReversed = "full" === j,
-            L = namesReversed ? T.defendant : T.plaintiff,
-            N = namesReversed ? T.plaintiff : T.defendant,
+            namesReversed = "partial" === settings.reverseMode || "full" === settings.reverseMode,
+            rolesReversed = "full" === settings.reverseMode,
+            L = namesReversed ? row.defendant : row.plaintiff,
+            N = namesReversed ? row.plaintiff : row.defendant,
             E = rolesReversed ? S : C,
             k = rolesReversed ? C : S,
             versusLayout =
-              "stacked" === versusSelect.value ? "stacked" : "leader",
+              "stacked" === settings.versusLayout ? "stacked" : "leader",
             hasPreservedBody = "string" == typeof preservedBody,
             mainBodyHtml = hasPreservedBody
               ? ee(preservedBody)
@@ -1518,7 +1518,7 @@
                 align: "center",
                 bold: !0,
               })),
-              (A += V("दायरी मिति- " + (d(T.date) || n), {
+              (A += V("दायरी मिति- " + (d(row.date) || n), {
                 align: "center",
                 bold: !0,
               })),
@@ -1547,7 +1547,7 @@
                     align: "center",
                     bold: !0,
                   })))),
-            (A += V((o ? "विषय- " : "मुद्दा- ") + (T.subject || n), {
+            (A += V((o ? "विषय- " : "मुद्दा- ") + (row.subject || n), {
               align: "center",
               bold: !0,
               underline: !0,
@@ -1576,10 +1576,16 @@
               (A += V("शाखा अधिकृत-" + preparationSuffix("branchOfficer"), { align: "left" })),
               (A += V("कम्प्युटर अपरेटर-" + preparationSuffix("computerOperator"), { align: "left" })),
               (A += V("इजलास नम्बर-" + preparationSuffix("benchNumber"), { align: "left" })),
-              (A += V("फाँट-" + (T.department ? " " + T.department : ""), { align: "left" })),
+              (A += V("फाँट-" + (row.department ? " " + row.department : ""), { align: "left" })),
               (A += itiParagraph),
-              (A += V("फैसला प्रमाणीकरण मिति-", { align: "left" }))),
-            (w.innerHTML = A),
+              (A += V("फैसला प्रमाणीकरण मिति-", { align: "left" }))));
+          return A;
+        }
+        function oe(e, preservedBody) {
+          if (!T) return;
+          w.innerHTML = orderHtml(T, {documentType:g.value, judge:y.value, partyStatus:v.value,
+            reverseMode:j, versusLayout:versusSelect.value}, preservedBody);
+          (
             (savedDraftRange = null),
             b.querySelector("#cobDraftWrap").classList.add("cob-show"),
             !1 !== e && w.focus());
@@ -1755,7 +1761,7 @@
             t
           );
         }
-        function wordParagraphXml(element, contentNodes) {
+        function wordParagraphXml(element, contentNodes, root = w, layout = previewEnhancer?.getLayout()) {
           const bodyParagraph = Boolean(element.closest(".cob-main-body,[data-cob-main-body='1']"));
           function colour(value) {
             const rgb = String(value).match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
@@ -1771,7 +1777,7 @@
               if (Number(style.fontWeight) >= 600 || style.fontWeight === "bold") props += "<w:b/><w:bCs/>";
               if (style.fontStyle === "italic") props += "<w:i/><w:iCs/>";
               let decorated = node.parentElement;
-              while (decorated && w.contains(decorated)) {
+              while (decorated && root.contains(decorated)) {
                 const line = getComputedStyle(decorated).textDecorationLine;
                 if (line.includes("underline") && !props.includes("<w:u")) props += '<w:u w:val="single"/>';
                 if (line.includes("line-through") && !props.includes("<w:strike")) props += "<w:strike/>";
@@ -1796,7 +1802,7 @@
             left = Math.max(0, element.dataset.cobCustomIndent !== undefined ? Math.round(Number(element.dataset.cobCustomIndent) * 20) : Number(element.dataset.docxLeft || Math.round(parseFloat(style.marginLeft) * 15) || 0)),
             right = Math.max(0, Math.round(parseFloat(style.marginRight) * 15 || 0)),
             first = Math.round(parseFloat(style.textIndent) * 15 || 0),
-            pageLayout = previewEnhancer?.getLayout(),
+            pageLayout = layout,
             geometry = pageLayout && window.COBPreviewEnhancements.pageGeometry(pageLayout),
             textWidth = geometry ? geometry.width - geometry.left - geometry.right : (["फैसला","कसूर_सजाय"].includes(g.value) ? 9224 : 9638),
             customTabs = String(element.dataset.peTabs || "").split(",").map(Number).filter(function (n) { return n > 0 && n <= 720; }),
@@ -1810,10 +1816,10 @@
           const keep = (element.dataset.peKeepNext === "1" ? "<w:keepNext/>" : "") + (element.dataset.peKeepLines === "1" ? "<w:keepLines/>" : "") + (element.dataset.pePageBefore === "1" ? "<w:pageBreakBefore/>" : "");
           return '<w:p><w:pPr>' + tabs + keep + '<w:jc w:val="' + align + '"/><w:spacing w:line="' + line + '" w:lineRule="auto" w:before="' + before + '" w:after="' + after + '"/><w:ind w:left="' + left + '" w:right="' + right + (first < 0 ? '" w:hanging="' + Math.abs(first) : '" w:firstLine="' + first) + '"/></w:pPr>' + nodes.map(runs).join("") + '</w:p>';
         }
-        function draftDocxBlocks(root) {
+        function draftDocxBlocks(root, layout) {
           const blocks = [], blockSelector = "p,div,li,section,article,h1,h2,h3,h4,h5,h6,blockquote,pre,ul,ol";
           function emit(element, nodes) {
-            blocks.push({ wordXml: wordParagraphXml(element, nodes) });
+            blocks.push({ wordXml: wordParagraphXml(element, nodes, root, layout) });
           }
           function visit(element, container) {
             let inline = [];
@@ -1862,8 +1868,117 @@
             w.innerHTML = ee(state.draftHtml); savedDraftRange = null; Z(); Q(); refreshNumbering(); applyPreviewFontSize(state.fontSize,false);
           }
         }) || null;
-        function documentSectionXml(isDecision) {
-          const layout = previewEnhancer?.getLayout();
+        const orderRows = [];
+        const sessionDrafts = new Map();
+
+        function orderName(row) {
+          const clean = value => value.replace(/[\\/:*?"<>|]/g, "-").trim();
+          return clean(r(row.serial).replace(/[.।]+$/, "")) + "." + clean(l(m(row.rawCase).caseNo).replace(/\s*-\s*/g,"-"));
+        }
+        function draftKey(row) {
+          const parts = _(row);
+          return "readymadeorders:CourtOrder:v1:" + (parts.date && parts.serial ? parts.stem : c(m(row.rawCase).caseNo) || "case");
+        }
+        function readSaved(row) {
+          const key = draftKey(row);
+          try {return JSON.parse(localStorage.getItem(key)) || sessionDrafts.get(key);}
+          catch {return sessionDrafts.get(key);}
+        }
+        function downloadWord(t, section, fontHalfPoints, filename) {
+          const blob = new Blob(
+                [
+                  ue([
+                    {
+                      name: "[Content_Types].xml",
+                      data: '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/></Types>',
+                    },
+                    {
+                      name: "_rels/.rels",
+                      data: '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>',
+                    },
+                    {
+                      name: "word/_rels/document.xml.rels",
+                      data: '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/></Relationships>',
+                    },
+                    {
+                      name: "word/settings.xml",
+                      data: '<?xml version="1.0" encoding="UTF-8"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:compat><w:doNotExpandShiftReturn/></w:compat></w:settings>',
+                    },
+                    {
+                      name: "word/styles.xml",
+                      data:
+                        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Kalimati" w:hAnsi="Kalimati" w:eastAsia="Kalimati" w:cs="Kalimati"/><w:sz w:val="' +
+                        fontHalfPoints +
+                        '"/><w:szCs w:val="' +
+                        fontHalfPoints +
+                        '"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:line="276" w:lineRule="auto" w:after="0"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:outlineLvl w:val="0"/></w:pPr></w:style></w:styles>',
+                    },
+                    {
+                      name: "word/document.xml",
+                      data:
+                        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' +
+                        t +
+                        section +
+                        "</w:body></w:document>",
+                    },
+                  ]),
+                ],
+                {
+                  type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                },
+              );
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = filename + ".docx";
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(link.href), 2000);
+        }
+        function exportList(button, message) {
+          const stage = document.createElement("div");
+          stage.className = "cob-draft";
+          stage.setAttribute("aria-hidden","true");
+          stage.style.cssText = "position:absolute;left:-20000px;top:0;visibility:hidden;width:170mm";
+          document.body.append(stage);
+          button.disabled = true;
+          try {
+            let body = "", lastSection = "", generated = 0;
+            for (const row of orderRows) {
+              const saved = readSaved(row) || {};
+              const layout = saved.previewLayout || null;
+              const section = documentSectionXml(["फैसला","कसूर_सजाय"].includes(saved.documentType),layout);
+              const sameLayout = section === lastSection;
+              if (lastSection && !sameLayout) body += "<w:p><w:pPr>" + lastSection + "</w:pPr></w:p>";
+              body += '<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:keepNext/>' +
+                (sameLayout ? "<w:pageBreakBefore/>" : "") + '<w:outlineLvl w:val="0"/></w:pPr>' +
+                de(orderName(row),true,false,26) + "</w:p>";
+              if (!saved.draftHtml) generated++;
+              stage.style.fontSize = (Number(saved.fontSize) || 13) + "pt";
+              stage.innerHTML = saved.draftHtml ? ee(saved.draftHtml) : orderHtml(row,saved,null);
+              body += draftDocxBlocks(stage,layout).map(block => block.wordXml).join("");
+              lastSection = section;
+            }
+            downloadWord(body,lastSection,26,"आदेश-सङ्ग्रह-" + (U(t.causeDateKey) || U(t.causeDate) || "पेशी-सूची"));
+            message.textContent = u(orderRows.length) + " आदेश डाउनलोड गरियो। नयाँ मस्यौदा " + u(generated) + "।";
+          } catch (error) {
+            message.textContent = "Word फाइल बनाउन सकिएन। " + error.message;
+          } finally {stage.remove(); button.disabled = false;}
+        }
+        function addListExport() {
+          const first = orderRows.length && document.querySelector("a.cob-link");
+          if (!first) return;
+          const bar = document.createElement("div");
+          bar.className = "cob-list-export";
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = "⇩ सबै आदेश · Word (" + u(orderRows.length) + ")";
+          const message = document.createElement("span");
+          message.setAttribute("role","status");
+          message.textContent = "सुरक्षित आदेश र बाँकी मुद्दाका खाली मस्यौदा एउटै कागजातमा।";
+          button.onclick = () => exportList(button,message);
+          bar.append(button,message);
+          first.closest("table").before(bar);
+        }
+        function documentSectionXml(isDecision, layout = previewEnhancer?.getLayout()) {
           if (!layout) return '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/>' + (isDecision ? '<w:pgMar w:top="1260" w:right="810" w:bottom="1080" w:left="1531"/>' : '<w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1531"/>') + '</w:sectPr>';
           const p = window.COBPreviewEnhancements.pageGeometry(layout);
           return '<w:sectPr><w:pgSz w:w="' + p.width + '" w:h="' + p.height + (p.landscape ? '" w:orient="landscape' : '') + '"/><w:pgMar w:top="' + p.top + '" w:right="' + p.right + '" w:bottom="' + p.bottom + '" w:left="' + p.left + '"/></w:sectPr>';
@@ -1878,7 +1993,8 @@
             try {
               (localStorage.setItem(A, JSON.stringify(e)), te(N, "Saved", !1));
             } catch (e) {
-              ne(N);
+              sessionDrafts.set(A,e);
+              te(N, "यस सत्रमा सुरक्षित", false);
             }
           }),
           b.querySelector("#cobPrint").addEventListener("click", function () {
@@ -1911,14 +2027,9 @@
                   .trim() + "\n",
               t = new Blob(["\ufeff", e], { type: "text/plain;charset=utf-8" }),
               n = document.createElement("a"),
-              a = _(T),
-              o = m(T.rawCase),
-              c =
-                (g.value || "आदेश") +
-                "-" +
-                o.caseNo.replace(/[\\/:*?\"<>|]/g, "-");
+              filename = orderName(T) + ".txt";
             ((n.href = URL.createObjectURL(t)),
-              (n.download = (a.date && a.serial ? a.stem : c) + ".txt"),
+              (n.download = filename),
               n.click(),
               te(k, "Downloaded", !0),
               setTimeout(function () {
@@ -1927,145 +2038,11 @@
           }),
           b.querySelector("#cobDocx").addEventListener("click", function () {
             if (!T) return;
-            r(w.innerText || w.textContent) || oe(!1);
-            const e = "फैसला" === g.value,
-              fontHalfPoints = Math.round(
-                2 * Number(w.dataset.cobFontSize || 13),
-              ),
-              t = draftDocxBlocks(w)
-                .map(function (t) {
-                  if (t.wordXml) return t.wordXml;
-                  return (function (e, t) {
-                    const a = r(" " === e.textContent ? "" : e.textContent),
-                      o =
-                        "center" === e.dataset.align
-                          ? "center"
-                          : "right" === e.dataset.align
-                            ? "right"
-                            : "left" === e.dataset.align
-                              ? "left"
-                              : "both",
-                      c = "1" === e.dataset.bold,
-                      i = "1" === e.dataset.underline,
-                      s = Number(e.dataset.firstLine || 0),
-                      left = Math.max(0, Number(e.dataset.docxLeft || 0)),
-                      indentAttributes =
-                        (left > 0 ? ' w:left="' + left + '"' : "") +
-                        (s > 0 ? ' w:firstLine="' + s + '"' : ""),
-                      l = indentAttributes
-                        ? "<w:ind" + indentAttributes + "/>"
-                        : "",
-                      u = "1" === e.dataset.party,
-                      d = "1" === e.dataset.iti,
-                      p =
-                        u || d
-                          ? '<w:tabs><w:tab w:val="right" w:leader="dot" w:pos="' +
-                            (t ? 9224 : 9638) +
-                            '"/></w:tabs>'
-                          : "";
-                    let m = de(a, c, i, fontHalfPoints);
-                    return (
-                      u
-                        ? (m =
-                            de(
-                              e.dataset.partyName || n,
-                              !1,
-                              !1,
-                              fontHalfPoints,
-                            ) +
-                            '<w:r><w:rPr><w:rFonts w:ascii="Kalimati" w:hAnsi="Kalimati" w:eastAsia="Kalimati" w:cs="Kalimati"/><w:sz w:val="' +
-                            fontHalfPoints +
-                            '"/><w:szCs w:val="' +
-                            fontHalfPoints +
-                            '"/></w:rPr><w:tab/></w:r>' +
-                            de(
-                              e.dataset.partyRole || "",
-                              !1,
-                              !1,
-                              fontHalfPoints,
-                            ))
-                        : d &&
-                          (m =
-                            de(
-                              e.dataset.itiText || a,
-                              !1,
-                              !1,
-                              fontHalfPoints,
-                            ) +
-                            '<w:r><w:rPr><w:rFonts w:ascii="Kalimati" w:hAnsi="Kalimati" w:eastAsia="Kalimati" w:cs="Kalimati"/><w:sz w:val="' +
-                            fontHalfPoints +
-                            '"/><w:szCs w:val="' +
-                            fontHalfPoints +
-                            '"/></w:rPr><w:tab/></w:r>'),
-                      "<w:p><w:pPr>" +
-                        p +
-                        '<w:jc w:val="' +
-                        o +
-                        '"/><w:spacing w:line="276" w:lineRule="auto" w:before="0" w:after="0"/>' +
-                        l +
-                        "</w:pPr>" +
-                        m +
-                        "</w:p>"
-                    );
-                  })(t, e);
-                })
-                .join(""),
-              a = new Blob(
-                [
-                  ue([
-                    {
-                      name: "[Content_Types].xml",
-                      data: '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/></Types>',
-                    },
-                    {
-                      name: "_rels/.rels",
-                      data: '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>',
-                    },
-                    {
-                      name: "word/_rels/document.xml.rels",
-                      data: '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/></Relationships>',
-                    },
-                    {
-                      name: "word/settings.xml",
-                      data: '<?xml version="1.0" encoding="UTF-8"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:compat><w:doNotExpandShiftReturn/></w:compat></w:settings>',
-                    },
-                    {
-                      name: "word/styles.xml",
-                      data:
-                        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Kalimati" w:hAnsi="Kalimati" w:eastAsia="Kalimati" w:cs="Kalimati"/><w:sz w:val="' +
-                        fontHalfPoints +
-                        '"/><w:szCs w:val="' +
-                        fontHalfPoints +
-                        '"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:line="276" w:lineRule="auto" w:after="0"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style></w:styles>',
-                    },
-                    {
-                      name: "word/document.xml",
-                      data:
-                        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' +
-                        t +
-                        documentSectionXml(e) +
-                        "</w:body></w:document>",
-                    },
-                  ]),
-                ],
-                {
-                  type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                },
-              ),
-              o = document.createElement("a");
-            o.href = URL.createObjectURL(a);
-            const c = _(T),
-              i = m(T.rawCase),
-              s =
-                (g.value || "आदेश") +
-                "-" +
-                i.caseNo.replace(/[\\/:*?"<>|]/g, "-");
-            ((o.download = (c.date && c.serial ? c.stem : s) + ".docx"),
-              o.click(),
-              te(b.querySelector("#cobDocx"), "Downloaded", !0),
-              setTimeout(function () {
-                URL.revokeObjectURL(o.href);
-              }, 1500));
+            r(w.innerText || w.textContent) || oe(false);
+            const body = draftDocxBlocks(w).map(block => block.wordXml).join("");
+            const section = documentSectionXml(["फैसला","कसूर_सजाय"].includes(g.value));
+            downloadWord(body, section, Math.round(2 * Number(w.dataset.cobFontSize || 13)), orderName(T));
+            te(b.querySelector("#cobDocx"), "Downloaded", true);
           }),
           g.addEventListener("change", function () {
             (ae(), Q(), T && oe(!1, preservedMainBodyHtml()));
@@ -2197,6 +2174,7 @@
                     causeListNumber: e.dataset.cobCauselistNumber || "1",
                   };
                   if (!d.rawCase) return;
+                  orderRows.push(d);
                   const p = _(d);
                   p.date && p.serial && G.indexOf(p.stem) < 0 && G.push(p.stem);
                   const x = document.createElement("a");
@@ -2207,22 +2185,8 @@
                       (e.preventDefault(),
                         (function (e) {
                           ((T = e),
-                            (A = (function (e) {
-                              const t = _(e),
-                                n = c(m(e.rawCase).caseNo) || "case";
-                              return (
-                                "readymadeorders:CourtOrder:v1:" +
-                                (t.date && t.serial ? t.stem : n)
-                              );
-                            })(e)));
-                          const n = (function (e) {
-                            try {
-                              const t = localStorage.getItem(e);
-                              return t ? JSON.parse(t) : null;
-                            } catch (e) {
-                              return null;
-                            }
-                          })(A);
+                            (A = draftKey(e)));
+                          const n = readSaved(e);
                           if (
                             ((g.value = "आदेश"),
                             (y.value = t.selectedJudge || y.value),
@@ -2272,6 +2236,7 @@
                             Q(),
                             b.classList.add("cob-open"),
                             (document.body.style.overflow = "hidden"),
+                            (b.querySelector("#cobTitle").textContent = "आदेश पूर्वावलोकन · " + orderName(e)),
                             oe(!1, null),
                             n && n.draftHtml && (w.innerHTML = ee(n.draftHtml)),
                             refreshNumbering(),
@@ -2363,12 +2328,13 @@
                               n.appendChild(e),
                               n.appendChild(a));
                           }
-                          e.replaceWith(n);
+                          e.after(n);
                         })
                         .catch(function () {});
                     })(x, d));
                 });
               }),
+              addListExport(),
               window.parent && window.parent !== window)
             ) {
               if (!document.getElementById("cob-month-embed-style")) {

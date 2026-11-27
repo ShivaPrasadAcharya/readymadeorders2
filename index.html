@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ne">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#572338">
+<title>आदेश सङ्ग्रह · अदालती कार्यकक्ष</title>
+<link rel="icon" href="assets/book.svg"><link rel="stylesheet" href="assets/catalogue.css">
+<script>if(new URLSearchParams(location.search).has("search"))location.replace("causelist.html"+location.search+location.hash)</script>
+<script defer src="assets/catalogue.js"></script>
+</head>
+<body>
+<header><div class="bar"><a class="brand" href="./"><img src="assets/book.svg" alt="">अदालती कार्यकक्ष</a><nav aria-label="मुख्य"><a href="causelist.html">पेशी सूची</a><a href="README.html">प्रयोग विधि</a></nav></div></header>
+<main>
+<div class="hero"><div><h1>आदेश सङ्ग्रह</h1><p>नमुना खोज्नुहोस्, मुद्दाअनुसार व्यहोरा मिलाउनुहोस् र प्रतिलिपि लिनुहोस्।</p></div><a class="launch" href="causelist.html">पेशी सूचीबाट आदेश तयार गर्नुहोस् <b aria-hidden="true">↗</b></a></div>
+<section class="tools" aria-label="आदेश खोज र छनोट"><div class="search"><span aria-hidden="true">⌕</span><input id="query" type="search" aria-label="आदेश खोज्नुहोस्" placeholder="शीर्षक, विषय वा व्यहोराबाट खोज्नुहोस्…" autocomplete="off"><kbd>/</kbd></div><label class="category">विषय<select id="group"><option value="">सबै विषय</option></select></label></section>
+<div class="views"><div id="views" role="group" aria-label="आदेश सूची"><button data-view="all" aria-pressed="true">सबै आदेश</button><button data-view="saved" aria-pressed="false">मनपर्ने</button><button data-view="recent" aria-pressed="false">हालै खोलिएका</button></div><span id="count" role="status"></span></div>
+<div id="list" class="grid" aria-label="आदेशका नमुना"></div><div id="empty" hidden><h2 id="emptyTitle"></h2><p id="emptyHint"></p><button id="reset">सबै आदेश हेर्नुहोस्</button></div>
+</main>
+<footer>प्रेरणा · श्री अन्जनराज सापकोटा <span>विकास · श्री शिवप्रसाद आचार्य</span></footer>
+<dialog id="reader" aria-labelledby="title"><div class="reader-head"><div><span id="subject"></span><h2 id="title"></h2></div><button id="close" aria-label="बन्द गर्नुहोस्">×</button></div>
+<div class="reader-body"><p id="tip"></p><div id="paper"></div><label id="editBox" hidden>आदेशको व्यहोरा<textarea id="editor" spellcheck="false"></textarea></label><div id="tools"><button id="edit">व्यहोरा सम्पादन</button><button id="restore" hidden>मूल पाठ फर्काउनुहोस्</button></div></div>
+<div class="reader-foot"><span id="notice" role="status"></span><button id="print">प्रिन्ट</button><button class="primary" id="copy">प्रतिलिपि लिनुहोस्</button></div></dialog>
+<div id="printArea"></div>
+</body></html>

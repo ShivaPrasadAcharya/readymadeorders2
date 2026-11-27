@@ -1950,7 +1950,7 @@
               if (lastSection && !sameLayout) body += "<w:p><w:pPr>" + lastSection + "</w:pPr></w:p>";
               body += '<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:keepNext/>' +
                 (sameLayout ? "<w:pageBreakBefore/>" : "") + '<w:outlineLvl w:val="0"/></w:pPr>' +
-                de(orderName(row),true,false,26) + "</w:p>";
+                de(orderName(row),true,false,26).replace("<w:sz ", '<w:color w:val="FFFFFF"/><w:sz ') + "</w:p>";
               if (!saved.draftHtml) generated++;
               stage.style.fontSize = (Number(saved.fontSize) || 13) + "pt";
               stage.innerHTML = saved.draftHtml ? ee(saved.draftHtml) : orderHtml(row,saved,null);

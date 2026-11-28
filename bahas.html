@@ -1156,7 +1156,10 @@ function lookup(lic, senior) {
   return advocateRows.length ? advocateRows : all;
 }
 
-function makeCustomRecord(name, idx) { return { licenceNo: 'custom', name: String(name || '').trim(), custom: true, senior: false, _idx: 'custom-' + idx }; }
+function makeCustomRecord(name, idx) {
+  const { token, senior } = parseSeniorFlag(name.replace(/\*[\u200B-\u200D\uFEFF\s]*$/, '*'));
+  return { licenceNo: 'custom', name: token, custom: true, senior, _idx: 'custom-' + idx };
+}
 function createSideOptions(selected) {
   const sides = getActiveSides();
   return sides.map(v => `<option value="${escapeHtml(v)}" ${v === selected ? 'selected' : ''}>${escapeHtml(SIDE_LABELS[v] || v)}</option>`).join('');
